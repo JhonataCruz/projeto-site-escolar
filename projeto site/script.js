@@ -15,6 +15,8 @@ menu.innerHTML += criarBotaoMenu("Início", "index.html");
 menu.innerHTML += criarBotaoMenu("Contato", "contato.html");
 menu.innerHTML += criarBotaoMenu("🛍️ Loja de Kimonos", "../loja online/index.html");
 menu.innerHTML += ` <a href="#" class="botao-menu" id="provadorBtn">Provador</a>`;
+// botao do tema do menu
+menu.innerHTML += ` <button id="themeToggle" class="botao-menu theme-toggle">🌙</button>`;
 
 // animação curta antes de seguir para a lojinha
 document.addEventListener('click', function(e){
@@ -83,5 +85,32 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
         }
         resultado.textContent = `Teu Tamanho:  ${tamanho}`;
+    });
+    // --- tema de persistencia do menu ---
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') body.classList.add('light-theme');
+    // update button icon
+    function updateThemeIcon(){
+        if (body.classList.contains('light-theme')) themeToggle.textContent = '☀️';
+        else themeToggle.textContent = '🌙';
+    }
+    if (themeToggle){
+        updateThemeIcon();
+        themeToggle.addEventListener('click', function(e){
+            e.preventDefault();
+            body.classList.toggle('light-theme');
+            const curr = body.classList.contains('light-theme') ? 'light' : 'dark';
+            localStorage.setItem('theme', curr);
+            updateThemeIcon();
+        });
+    }
+
+    // --- Animate cards similarly to homepage ---
+    const cards = document.querySelectorAll('.card-boas-vindas, .card-contato');
+    cards.forEach((el, i) => {
+        el.classList.add('animate-card');
+        setTimeout(() => el.classList.add('show'), 80 * i);
     });
 });
