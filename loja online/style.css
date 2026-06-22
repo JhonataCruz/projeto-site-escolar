@@ -1,0 +1,410 @@
+/* Importação de fontes externas do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+/* Reset básico para remover margens padrão e configurar o box-sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Definição de variáveis globais (Custom Properties) para fácil manutenção de cores e padrões */
+:root {
+    --blue:       #1e88e5;
+    --blue-dark:  #1565c0;
+    --green:      #2e7d32;
+    --green-light:#43a047;
+    --bg:         #eef2f7;
+    --white:      #ffffff;
+    --text:       #1a1a2e;
+    --muted:      #6b7280;
+    --radius:     14px;
+    --shadow:     0 4px 20px rgba(0,0,0,.09);
+    --transition: .2s ease;
+}
+
+/* o contrario de branco do menu reutilizavel*/
+.dark-mode {
+    --bg:         #1a1a2e;
+    --white:      #2d2d3d;
+    --text:       #e0e0e0;
+    --muted:      #a0a0b0;
+    --shadow:     0 4px 20px rgba(0,0,0,.3);
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+/* ── HEADER ── */
+header {
+    background: linear-gradient(135deg, #c41e3a, #e63946);
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(196,30,58,.4);
+    position: sticky; /* Mantém o cabeçalho fixo no topo ao rolar a página */
+    top: 0;
+    z-index: 100;
+    transition: background var(--transition), box-shadow var(--transition);
+}
+
+header h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -.3px;
+}
+
+.btn-voltar {
+    color: #fff;
+    text-decoration: none;
+    font-size: .9rem;
+    background: rgba(255,255,255,.15);
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background var(--transition), transform var(--transition);
+    border: 1px solid rgba(255,255,255,.25);
+    display: inline-block;
+}
+
+.btn-voltar:hover {
+    background: rgba(255,255,255,.25);
+    transform: scale(1.05);
+}
+
+#carrinho-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-size: .9rem;
+    font-weight: 500;
+    backdrop-filter: blur(6px); /* Efeito de vidro borrado atrás do elemento */
+    transition: background var(--transition);
+}
+
+#carrinho-info:hover {
+    background: rgba(255,255,255,.25);
+}
+
+#quantidade {
+    background: #fff;
+    color: #c41e3a;
+    font-weight: 700;
+    font-size: .78rem;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── LAYOUT PRINCIPAL ── */
+main {
+    display: flex;
+    padding: 28px 32px;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* ── VITRINE DE PRODUTOS ── */
+#produtos {
+    flex: 3; /* Ocupa 3/4 do espaço disponível */
+    display: grid;
+    /* Cria colunas dinâmicas que se ajustam sozinhas com tamanho mínimo de 200px */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition), color var(--transition);
+}
+
+/* overlay de descrição mostrado ao passar o mouse */
+.card { position: relative; overflow: hidden; }
+.card .overlay-desc {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+    transition: opacity .22s ease, transform .22s ease;
+    z-index: 10;
+}
+.card:hover .overlay-desc {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Modal descrição */
+.modal-hidden { display: none; }
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999;
+}
+.modal-card {
+    position: fixed; left:50%; top:50%; transform: translate(-50%,-50%);
+    background: var(--white); color: var(--text); padding: 18px 20px; border-radius: 12px; z-index:1000; width: 360px; box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+.modal-card h3 { margin-top: 0; color: #c41e3a; }
+.modal-close { position:absolute; top:8px; right:10px; background:transparent; border:none; font-size:20px; cursor:pointer; }
+
+/* animação de entrada para os kimonos da lojinha*/
+.card { opacity: 0; transform: translateY(18px); }
+.card.animate-in {
+    animation: fadeUp .45s cubic-bezier(.2,.9,.2,1) forwards;
+}
+.card .price, .card p, .card button { opacity: 0; transform: translateY(6px); }
+.card.animate-in .price,
+.card.animate-in p,
+.card.animate-in button { animation: fadeUpSmall .35s forwards; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUpSmall {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card:hover {
+    transform: translateY(-4px); /* Efeito sutil de flutuação ao passar o mouse */
+    box-shadow: 0 10px 30px rgba(0,0,0,.13);
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+    border-radius: 8px;
+}
+
+.card h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.card p {
+    font-size: .95rem;
+    font-weight: 500;
+    color: #c41e3a;
+}
+
+.card button {
+    margin-top: auto; /* Empurra o botão sempre para o final do card, alinhando-os */
+    width: 100%;
+    padding: 10px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+}
+
+.card button:hover {
+    background: var(--green-light);
+    transform: scale(1.02);
+}
+
+.card button:active {
+    transform: scale(.98);
+}
+
+.btn-comprar {
+    width: 100%;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #c41e3a, #e63946);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.btn-comprar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(230, 57, 70, 0.35);
+}
+
+.buy-area {
+    margin-top: 20px;
+}
+
+/* ── LATERAL DO CARRINHO ── */
+aside {
+    flex: 1; /* Ocupa 1/4 do espaço disponível */
+    min-width: 260px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    position: sticky; /* O carrinho acompanha a rolagem da tela */
+    top: 80px;
+    transition: background-color var(--transition), color var(--transition), box-shadow var(--transition);
+}
+
+aside h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--bg);
+    color: var(--text);
+}
+
+#lista-carrinho {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 40px;
+    margin-bottom: 20px;
+}
+
+#lista-carrinho li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: var(--bg);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: .88rem;
+    font-weight: 500;
+    color: var(--text);
+    animation: slideIn .2s ease; /* Animação ao surgir um novo item */
+    transition: background-color var(--transition), color var(--transition);
+}
+
+/* Keyframes para a animação de entrada de itens no carrinho */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+#lista-carrinho li button {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    font-size: .8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--transition);
+}
+
+#lista-carrinho li button:hover {
+    background: #fca5a5;
+}
+
+/* ── CAIXA DE TOTALIZAÇÃO ── */
+.total-box {
+    border-top: 2px solid var(--bg);
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-box h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.total-box strong {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #c41e3a;
+}
+
+/* ── roupinha do contrario de branco ── */
+.toggle-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(50, 7, 7, 0.219);
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 8px 16px;
+    border-radius: 99px;
+    backdrop-filter: blur(6px);
+}
+
+#temaChecbox {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    accent-color: #f90;
+}
+
+.toggle-area label {
+    cursor: pointer;
+    font-size: .9rem;
+    font-weight: 500;
+    color: #fff;
+    margin: 0;
+}
+
+.toggle-area label:hover {
+    opacity: .8;
+}
+
+/* ── RESPONSIVIDADE (Telas menores) ── */
+@media (max-width: 700px) {
+    main { 
+        flex-direction: column; /* Coloca o carrinho abaixo dos produtos em telas pequenas */
+        padding: 16px; 
+    }
+    aside { 
+        position: static; 
+        width: 100%; 
+    }
+    header { 
+        padding: 14px 16px; 
+    }
+}
