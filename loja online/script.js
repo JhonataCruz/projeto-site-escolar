@@ -138,9 +138,194 @@ function atualizarBotaoComprar() {
 
 function btnComprar() {
     if (carrinho.length > 0) {
-        alert('Pedido finalizado com sucesso!');
+        abrirPagamento();
     }
 }
+
+// ── SISTEMA DE PAGAMENTO ──
+let metodoSelecionado = null;
+
+function abrirPagamento() {
+    const modal = document.getElementById('pagamentoModal');
+    if (modal) modal.classList.remove('modal-hidden');
+}
+
+function fecharPagamento() {
+    const modals = ['pagamentoModal', 'pixModal', 'cartaoModal'];
+    modals.forEach(id => {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('modal-hidden');
+    });
+    metodoSelecionado = null;
+}
+
+function abrirPix() {
+    const modal = document.getElementById('pagamentoModal');
+    if (modal) modal.classList.add('modal-hidden');
+    const pixModal = document.getElementById('pixModal');
+    if (pixModal) pixModal.classList.remove('modal-hidden');
+    
+    const total = carrinho.reduce((soma, item) => soma + item.preco, 0);
+    document.querySelector('.pix-value').textContent = `R$ ${total.toFixed(2)}`;
+}
+
+function abrirCartao(tipo) {
+    metodoSelecionado = tipo;
+    const modal = document.getElementById('pagamentoModal');
+    if (modal) modal.classList.add('modal-hidden');
+    const cartaoModal = document.getElementById('cartaoModal');
+    if (cartaoModal) cartaoModal.classList.remove('modal-hidden');
+    
+    const title = document.getElementById('cartaoTitle');
+    title.textContent = tipo === 'credito' ? 'Informações do Cartão de Crédito' : 'Informações do Cartão de Débito';
+    
+    const parcelDiv = document.getElementById('parcelamentoDiv');
+    if (tipo === 'credito') {
+        parcelDiv.style.display = 'block';
+        atualizarParcelamento();
+    } else {
+        parcelDiv.style.display = 'none';
+    }
+}
+
+function atualizarParcelamento() {
+    const total = carrinho.reduce((soma, item) => soma + item.preco, 0);
+    const select = document.getElementById('parcelamento');
+    select.innerHTML = '';
+    
+    for (let i = 1; i <= 10; i++) {
+        const valorParcela = total / i;
+        let juros = 0;
+        let etiqueta = '';
+        
+        if (i <= 6) {
+            etiqueta = `${i}x sem juros - R$ ${valorParcela.toFixed(2)}`;
+        } else {
+            juros = total * 0.20;
+            const totalComJuros = total + juros;
+            const parcelaComJuros = totalComJuros / i;
+            etiqueta = `${i}x com juros - R$ ${parcelaComJuros.toFixed(2)} (Total: R$ ${totalComJuros.toFixed(2)})`;
+        }
+        
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = etiqueta;
+        select.appendChild(option);
+    }
+    
+    select.addEventListener('change', exibirInfoParcelamento);
+    exibirInfoParcelamento();
+}
+
+function exibirInfoParcelamento() {
+    const total = carrinho.reduce((soma, item) => soma + item.preco, 0);
+    const select = document.getElementById('parcelamento');
+    const parcelas = parseInt(select.value);
+    const info = document.getElementById('parcelamentoInfo');
+    
+    if (parcelas <= 6) {
+        info.textContent = `✓ Sem juros - ${parcelas} parcelas de R$ ${(total / parcelas).toFixed(2)}`;
+        info.style.color = '#2e7d32';
+    } else {
+        const juros = total * 0.20;
+        const totalComJuros = total + juros;
+        const parcelaComJuros = totalComJuros / parcelas;
+        info.textContent = `⚠ Com 20% de juros - ${parcelas} parcelas de R$ ${parcelaComJuros.toFixed(2)} (Juros: R$ ${juros.toFixed(2)})`;
+        info.style.color = '#dc2626';
+    }
+}
+
+function validarCartao() {
+    const numero = document.getElementById('numeroCartao').value.replace(/\s/g, '');
+    const validade = document.getElementById('validade').value;
+    const cvv = document.getElementById('cvv').value;
+    const nome = document.getElementById('nomeTitular').value;
+    
+    if (numero.length !== 16 || !/^\d+$/.test(numero)) {
+        alert('Número do cartão inválido!');
+        return false;
+    }
+    if (!/^\d{2}\/\d{2}$/.test(validade)) {
+        alert('Validade no formato MM/AA inválido!');
+        return false;
+    }
+    if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+        alert('CVV inválido!');
+        return false;
+    }
+    if (nome.trim().length < 3) {
+        alert('Nome do titular inválido!');
+        return false;
+    }
+    return true;
+}
+
+function confirmarPagamento(tipo) {
+    if (tipo === 'pix') {
+        alert('PIX confirmado! Copie o número de PIX e envie o comprovante. ✓');
+    } else if (tipo === 'cartao') {
+        if (!validarCartao()) return;
+        
+        const parcelas = metodoSelecionado === 'credito' ? document.getElementById('parcelamento').value : 1;
+        const total = carrinho.reduce((soma, item) => soma + item.preco, 0);
+        
+        if (metodoSelecionado === 'credito' && parcelas > 6) {
+            const juros = total * 0.20;
+            alert(`Pagamento de ${parcelas}x confirmado!\nValor com 20% de juros: R$ ${(total + juros).toFixed(2)} ✓`);
+        } else {
+            alert(`Pagamento confirmado!\nValor: R$ ${total.toFixed(2)} ✓`);
+        }
+    }
+    
+    carrinho = [];
+    salvarEAtualizar();
+    fecharPagamento();
+}
+
+// Inicializar listeners de pagamento
+document.addEventListener('DOMContentLoaded', function(){
+    // Botão comprar
+    const botaoComprar = document.getElementById('botao-comprar');
+    if (botaoComprar) botaoComprar.addEventListener('click', btnComprar);
+    
+    // Fechar modals de pagamento
+    const pagClose = document.getElementById('pagClose');
+    const pagOverlay = document.getElementById('pagOverlay');
+    const pixClose = document.getElementById('pixClose');
+    const pixOverlay = document.getElementById('pixOverlay');
+    const cartaoClose = document.getElementById('cartaoClose');
+    const cartaoOverlay = document.getElementById('cartaoOverlay');
+    
+    if (pagClose) pagClose.addEventListener('click', fecharPagamento);
+    if (pagOverlay) pagOverlay.addEventListener('click', fecharPagamento);
+    if (pixClose) pixClose.addEventListener('click', () => { abrirPagamento(); document.getElementById('pixModal').classList.add('modal-hidden'); });
+    if (pixOverlay) pixOverlay.addEventListener('click', () => { abrirPagamento(); document.getElementById('pixModal').classList.add('modal-hidden'); });
+    if (cartaoClose) cartaoClose.addEventListener('click', () => { abrirPagamento(); document.getElementById('cartaoModal').classList.add('modal-hidden'); });
+    if (cartaoOverlay) cartaoOverlay.addEventListener('click', () => { abrirPagamento(); document.getElementById('cartaoModal').classList.add('modal-hidden'); });
+    
+    // Métodos de pagamento
+    const paymentBtns = document.querySelectorAll('.payment-btn');
+    paymentBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const method = this.getAttribute('data-method');
+            if (method === 'pix') abrirPix();
+            else if (method === 'credito') abrirCartao('credito');
+            else if (method === 'debito') abrirCartao('debito');
+        });
+    });
+    
+    // PIX
+    const pixConfirm = document.getElementById('pixConfirm');
+    const pixBack = document.getElementById('pixBack');
+    if (pixConfirm) pixConfirm.addEventListener('click', () => confirmarPagamento('pix'));
+    if (pixBack) pixBack.addEventListener('click', () => { abrirPagamento(); document.getElementById('pixModal').classList.add('modal-hidden'); });
+    
+    // Cartão
+    const cartaoConfirm = document.getElementById('cartaoConfirm');
+    const cartaoBack = document.getElementById('cartaoBack');
+    if (cartaoConfirm) cartaoConfirm.addEventListener('click', () => confirmarPagamento('cartao'));
+    if (cartaoBack) cartaoBack.addEventListener('click', () => { abrirPagamento(); document.getElementById('cartaoModal').classList.add('modal-hidden'); });
+});
 
 // 8. Persistência de Dados e Sincronização
 function salvarEAtualizar() {

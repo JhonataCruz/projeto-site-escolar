@@ -394,6 +394,138 @@ aside h2 {
     opacity: .8;
 }
 
+/* ── MODALS DE PAGAMENTO ── */
+.payment-modal {
+    width: 420px !important;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.payment-methods {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+    margin-bottom: 12px;
+}
+
+.payment-btn {
+    padding: 16px 12px;
+    background: var(--bg);
+    color: var(--text);
+    border: 2px solid var(--bg);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.payment-btn:hover {
+    background: #c41e3a;
+    color: #fff;
+    border-color: #c41e3a;
+    transform: translateY(-2px);
+}
+
+/* PIX */
+.pix-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.pix-number, .pix-value {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #c41e3a;
+    word-break: break-all;
+    padding: 12px;
+    background: var(--white);
+    border-radius: 6px;
+    border: 1px solid #c41e3a;
+}
+
+/* Formulário de Cartão */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--text);
+    font-size: 0.9rem;
+    transition: border-color var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #c41e3a;
+    box-shadow: 0 0 0 3px rgba(196,30,58,.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+#parcelamentoInfo {
+    text-align: left;
+}
+
+/* Botões de Ação */
+.btn-confirm, .btn-back {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-top: 8px;
+}
+
+.btn-confirm {
+    background: linear-gradient(135deg, #c41e3a, #e63946);
+    color: #fff;
+}
+
+.btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(196,30,58,.3);
+}
+
+.btn-back {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--muted);
+}
+
+.btn-back:hover {
+    background: var(--muted);
+    color: #fff;
+}
+
 /* ── RESPONSIVIDADE (Telas menores) ── */
 @media (max-width: 700px) {
     main { 
@@ -406,5 +538,8 @@ aside h2 {
     }
     header { 
         padding: 14px 16px; 
+    }
+    .payment-modal {
+        width: 90% !important;
     }
 }
