@@ -205,3 +205,50 @@ body.light-theme .card-contato { background-color: var(--card-bg-light); color: 
 
 /* botao ficar um pocu transparente */
 #themeToggle { background: transparent; border: 2px solid var(--accent); color: inherit; padding: 10px 14px; border-radius: 8px; cursor:pointer; font-size:16px; }
+
+/* Rodapé com redes sociais */
+.rodape-estudante {
+    margin-top: 60px;
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 2px solid rgba(196, 30, 58, 0.35);
+}
+
+.redes-sociais {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 14px;
+}
+
+.icone-social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(196, 30, 58, 0.12);
+    border: 2px solid var(--accent);
+    color: var(--text);
+    transition: all 300ms ease;
+}
+
+.icone-social:hover {
+    background: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(196, 30, 58, 0.45);
+}
+
+.icone-social svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.credito-estudante {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    letter-spacing: 0.5px;
+}

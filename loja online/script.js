@@ -10,12 +10,9 @@ const produtos = [
     { id: 3, nome: "Kimono Nagashima",     preco: 690,  imagem: "imagens/nagashima.jpg", descricao: "Acabamento premium, tecido encorpado e durável; recomendado para praticantes regulares." },
     { id: 4, nome: "Kimono Sakura (Approved)", preco: 1600, imagem: "imagens/sakura.jpg", descricao: "Edição especial com bordados e forro reforçado; visual elegante para apresentações." }
 ];
-
-// Captura a seção do HTML onde os produtos serão inseridos
 const areaProdutos = document.getElementById("produtos");
-
 // 3. Renderização da Vitrine de Produtos
-// Mapeia o array de produtos transformando cada um em um bloco HTML (card)
+// Mapeia o array de produtos transformando cada um card
 function renderizarProdutos() {
     areaProdutos.innerHTML = produtos.map(produto => `
         <div class="card" data-id="${produto.id}">
@@ -84,23 +81,20 @@ function fecharDescricao(){
 
 // 4. Adicionar Item ao Carrinho
 function adicionarCarrinho(id) {
-    // Procura no "banco de dados" o produto que possui o ID clicado
+    // Procura no "banco de dados kkkkk" o id
     const produto = produtos.find(p => p.id === id);
     // Adiciona uma cópia do produto ao array do carrinho
     carrinho.push(produto);
-    // Dispara a rotina de salvamento e atualização visual
     salvarEAtualizar();
 }
 
 // 5. Remover Item do Carrinho
 function removerItem(index) {
-    // Remove 1 item do array com base no seu índice de posição
     carrinho.splice(index, 1);
-    // Dispara a rotina de salvamento e atualização visual
     salvarEAtualizar();
 }
 
-// 6. Atualizar a Interface do Carrinho
+// 6. Atualizar a Interface do Carrinhp
 function atualizarCarrinho() {
     const lista = document.getElementById("lista-carrinho");
     lista.innerHTML = ""; // Limpa o HTML interno antigo para evitar duplicados
@@ -115,11 +109,11 @@ function atualizarCarrinho() {
         `;
     });
 
-    // Chama a função para recalcular o valor financeiro total
+    // Chama a função para recaalcular o valor financeiro
     atualizarTotal();
 }
 
-// 7. Calcular Valores de Totalização
+// 7. Calcular Valores de Tutal
 function atualizarTotal() {
     // Usa o .reduce() para somar a propriedade 'preco' de todos os itens do carrinho
     const total = carrinho.reduce((soma, item) => soma + item.preco, 0);
@@ -282,13 +276,13 @@ function confirmarPagamento(tipo) {
     fecharPagamento();
 }
 
-// Inicializar listeners de pagamento
+// inicializa de pagamento
 document.addEventListener('DOMContentLoaded', function(){
     // Botão comprar
     const botaoComprar = document.getElementById('botao-comprar');
     if (botaoComprar) botaoComprar.addEventListener('click', btnComprar);
     
-    // Fechar modals de pagamento
+    // Fechar modal de pagamento
     const pagClose = document.getElementById('pagClose');
     const pagOverlay = document.getElementById('pagOverlay');
     const pixClose = document.getElementById('pixClose');
@@ -303,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if (cartaoClose) cartaoClose.addEventListener('click', () => { abrirPagamento(); document.getElementById('cartaoModal').classList.add('modal-hidden'); });
     if (cartaoOverlay) cartaoOverlay.addEventListener('click', () => { abrirPagamento(); document.getElementById('cartaoModal').classList.add('modal-hidden'); });
     
-    // Métodos de pagamento
+    // metodos de pagamento
     const paymentBtns = document.querySelectorAll('.payment-btn');
     paymentBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -331,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function(){
 function salvarEAtualizar() {
     // Converte o array para texto JSON e salva no armazenamento local do navegador
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    // Redesenha o carrinho na interface visual
+    // re desenha o carrinho
     atualizarCarrinho();
     atualizarBotaoComprar();
 }
@@ -349,7 +343,7 @@ checkbox.addEventListener('change', function(){
     if(checkbox.checked){
         document.body.classList.add('dark-mode');
         localStorage.setItem('temaEscuro', 'ativado');
-        labelTema.textContent = ' o contrário de preto';
+        labelTema.textContent = ' o contrário de preto*';
     }else{
          document.body.classList.remove('dark-mode');
          localStorage.setItem('temaEscuro', 'desativado');
