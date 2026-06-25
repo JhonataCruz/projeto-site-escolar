@@ -150,7 +150,7 @@ body.light-theme {
 }
 .resultado { margin-top:12px; color:#ffd; font-weight:700; text-align:center; }
 
-/* Animação ao clicar no botão da lojinha mt legal */
+/* Animação de clicar no botão da lojinha mt legal */
 .botao-menu.click-animate {
     animation: lojaClick 260ms ease forwards;
 }
@@ -203,7 +203,7 @@ body.light-theme .card-contato { background-color: var(--card-bg-light); color: 
 
 .card-contato h2 { color: var(--accent); margin-top: 0; }
 
-/* botao ficar um pocu transparente */
+/* botao ficar um pouc transparente */
 #themeToggle { background: transparent; border: 2px solid var(--accent); color: inherit; padding: 10px 14px; border-radius: 8px; cursor:pointer; font-size:16px; }
 
 /* Rodapé com redes sociais */

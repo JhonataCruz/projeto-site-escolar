@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const body = document.body;
     const saved = localStorage.getItem('theme');
     if (saved === 'light') body.classList.add('light-theme');
-    // update button icon
+    // atualiza o icone do botao de tema
     function updateThemeIcon(){
         if (body.classList.contains('light-theme')) themeToggle.textContent = '☀️';
         else themeToggle.textContent = '🌙';
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     }
 
-    // --- Animate cards similarly to homepage ---
+    // --- anima os cards da pagina de inicio ---
     const cards = document.querySelectorAll('.card-boas-vindas, .card-contato');
     cards.forEach((el, i) => {
         el.classList.add('animate-card');

@@ -172,6 +172,63 @@ main {
 .modal-card h3 { margin-top: 0; color: #c41e3a; }
 .modal-close { position:absolute; top:8px; right:10px; background:transparent; border:none; font-size:20px; cursor:pointer; }
 
+/* Janelinha de escolher tamanho do kimono */
+.tamanho-modal {
+    width: 340px !important;
+    text-align: center;
+}
+.tamanho-subtitulo {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 8px 0 16px;
+}
+.tamanho-opcoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.btn-tamanho {
+    padding: 14px;
+    background: var(--bg);
+    color: var(--text);
+    border: 2px solid var(--bg);
+    border-radius: 10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+.btn-tamanho:hover {
+    background: #c41e3a;
+    color: #fff;
+    border-color: #c41e3a;
+    transform: translateY(-2px);
+}
+
+/* Tamanho aparecendo ao lado do item no carrinho */
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+.item-info small {
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+.item-tamanho {
+    display: inline-block;
+    background: #c41e3a;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
 /* animação de entrada para os kimonos da lojinha*/
 .card { opacity: 0; transform: translateY(18px); }
 .card.animate-in {

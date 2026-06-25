@@ -20,7 +20,7 @@ function renderizarProdutos() {
             <img src="${produto.imagem}" alt="${produto.nome}">
             <h3>${produto.nome}</h3>
             <p class="price">R$ ${produto.preco.toFixed(2)}</p>
-            <button onclick="adicionarCarrinho(${produto.id})">Adicionar</button>
+            <button onclick="abrirEscolhaTamanho(${produto.id})">Adicionar</button>
         </div>
     `).join(""); // O .join("") remove as vírgulas geradas pelo método .map()
 }
@@ -61,6 +61,22 @@ document.addEventListener('DOMContentLoaded', function(){
     const overlayModal = document.getElementById('descOverlay');
     if (fechar) fechar.addEventListener('click', fecharDescricao);
     if (overlayModal) overlayModal.addEventListener('click', fecharDescricao);
+
+    // --- Janelinha de tamanho do kimono ---
+    const tamanhoClose = document.getElementById('tamanhoClose');
+    const tamanhoOverlay = document.getElementById('tamanhoOverlay');
+    const botoesTamanho = document.querySelectorAll('.btn-tamanho');
+
+    if (tamanhoClose) tamanhoClose.addEventListener('click', fecharEscolhaTamanho);
+    if (tamanhoOverlay) tamanhoOverlay.addEventListener('click', fecharEscolhaTamanho);
+
+    // Cada botão A1, A2, A3, A4 chama adicionarComTamanho com o valor certo
+    botoesTamanho.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tamanho = this.getAttribute('data-tamanho');
+            adicionarComTamanho(tamanho);
+        });
+    });
 });
 
 function abrirDescricao(id){
@@ -79,12 +95,39 @@ function fecharDescricao(){
     if (modal) modal.classList.add('modal-hidden');
 }
 
-// 4. Adicionar Item ao Carrinho
-function adicionarCarrinho(id) {
-    // Procura no "banco de dados kkkkk" o id
+// 4. Escolher tamanho antes de adicionar no carrinho
+// Guardamos qual produto o cliente clicou (só um por vez)
+let produtoPendente = null;
+
+// Abre a janelinha no meio da tela perguntando o tamanho
+function abrirEscolhaTamanho(id) {
     const produto = produtos.find(p => p.id === id);
-    // Adiciona uma cópia do produto ao array do carrinho
-    carrinho.push(produto);
+    if (!produto) return;
+
+    produtoPendente = produto;
+
+    const modal = document.getElementById('tamanhoModal');
+    const titulo = document.getElementById('tamanhoTitulo');
+    if (titulo) titulo.textContent = `Tamanho do ${produto.nome}`;
+    if (modal) modal.classList.remove('modal-hidden');
+}
+
+// Fecha a janelinha e limpa o produto que estava esperando
+function fecharEscolhaTamanho() {
+    const modal = document.getElementById('tamanhoModal');
+    if (modal) modal.classList.add('modal-hidden');
+    produtoPendente = null;
+}
+
+// Quando o cliente clica em A1, A2, A3 ou A4
+function adicionarComTamanho(tamanho) {
+    if (!produtoPendente) return;
+
+    // Copia o produto e grava o tamanho escolhido junto
+    const item = { ...produtoPendente, tamanho: tamanho };
+    carrinho.push(item);
+
+    fecharEscolhaTamanho();
     salvarEAtualizar();
 }
 
@@ -101,9 +144,14 @@ function atualizarCarrinho() {
 
     // Percorre o carrinho atual e reconstrói a lista do HTML com os novos itens
     carrinho.forEach((item, index) => {
+        // Mostra o tamanho ao lado do nome (ex: "Kimono Adidas · A2")
+        const tamanhoTexto = item.tamanho ? `<span class="item-tamanho">${item.tamanho}</span>` : '';
         lista.innerHTML += `
             <li>
-                ${item.nome} - R$ ${item.preco.toFixed(2)}
+                <span class="item-info">
+                    ${item.nome} ${tamanhoTexto}
+                    <small>R$ ${item.preco.toFixed(2)}</small>
+                </span>
                 <button onclick="removerItem(${index})">X</button>
             </li>
         `;
