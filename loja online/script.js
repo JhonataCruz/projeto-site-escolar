@@ -303,25 +303,64 @@ function validarCartao() {
 }
 
 function confirmarPagamento(tipo) {
-    if (tipo === 'pix') {
-        alert('PIX confirmado! Copie o número de PIX e envie o comprovante. ✓');
-    } else if (tipo === 'cartao') {
+    if (tipo === 'cartao') {
         if (!validarCartao()) return;
-        
-        const parcelas = metodoSelecionado === 'credito' ? document.getElementById('parcelamento').value : 1;
-        const total = carrinho.reduce((soma, item) => soma + item.preco, 0);
-        
-        if (metodoSelecionado === 'credito' && parcelas > 6) {
-            const juros = total * 0.20;
-            alert(`Pagamento de ${parcelas}x confirmado!\nValor com 20% de juros: R$ ${(total + juros).toFixed(2)} ✓`);
-        } else {
-            alert(`Pagamento confirmado!\nValor: R$ ${total.toFixed(2)} ✓`);
-        }
     }
-    
+
     carrinho = [];
     salvarEAtualizar();
     fecharPagamento();
+    abrirAvaliacao();
+}
+
+// --- Sistema de avaliação (aparece quando a compra termina) ---
+let notaAvaliacao = 0;
+
+function abrirAvaliacao() {
+    notaAvaliacao = 0;
+    const modal = document.getElementById('avaliacaoModal');
+    const areaComentario = document.getElementById('areaComentario');
+    const notaTexto = document.getElementById('notaEscolhida');
+    const comentario = document.getElementById('comentarioAvaliacao');
+
+    if (notaTexto) notaTexto.textContent = '';
+    if (comentario) comentario.value = '';
+    if (areaComentario) areaComentario.classList.add('modal-hidden');
+    document.querySelectorAll('.estrela').forEach(e => e.classList.remove('ativa'));
+
+    if (modal) modal.classList.remove('modal-hidden');
+}
+
+function fecharAvaliacao() {
+    const modal = document.getElementById('avaliacaoModal');
+    if (modal) modal.classList.add('modal-hidden');
+}
+
+function pintarEstrelas(nota) {
+    document.querySelectorAll('.estrela').forEach(estrela => {
+        const valor = Number(estrela.getAttribute('data-nota'));
+        if (valor <= nota) estrela.classList.add('ativa');
+        else estrela.classList.remove('ativa');
+    });
+}
+
+function escolherNota(nota) {
+    notaAvaliacao = nota;
+    pintarEstrelas(nota);
+
+    const notaTexto = document.getElementById('notaEscolhida');
+    const areaComentario = document.getElementById('areaComentario');
+
+    if (notaTexto) notaTexto.textContent = `Você deu ${nota} estrela${nota > 1 ? 's' : ''}!`;
+    if (areaComentario) areaComentario.classList.remove('modal-hidden');
+}
+
+function enviarAvaliacao() {
+    const comentario = document.getElementById('comentarioAvaliacao').value.trim();
+    let msg = `Obrigado pela avaliação de ${notaAvaliacao} estrela${notaAvaliacao > 1 ? 's' : ''}!`;
+    if (comentario) msg += '\nSeu comentário foi registrado.';
+    alert(msg);
+    fecharAvaliacao();
 }
 
 // inicializa de pagamento
@@ -367,6 +406,35 @@ document.addEventListener('DOMContentLoaded', function(){
     const cartaoBack = document.getElementById('cartaoBack');
     if (cartaoConfirm) cartaoConfirm.addEventListener('click', () => confirmarPagamento('cartao'));
     if (cartaoBack) cartaoBack.addEventListener('click', () => { abrirPagamento(); document.getElementById('cartaoModal').classList.add('modal-hidden'); });
+
+    // Avaliação depois da compra
+    const avaliacaoClose = document.getElementById('avaliacaoClose');
+    const avaliacaoOverlay = document.getElementById('avaliacaoOverlay');
+    const estrelas = document.querySelectorAll('.estrela');
+    const enviarBtn = document.getElementById('enviarAvaliacao');
+
+    if (avaliacaoClose) avaliacaoClose.addEventListener('click', fecharAvaliacao);
+    if (avaliacaoOverlay) avaliacaoOverlay.addEventListener('click', fecharAvaliacao);
+
+    estrelas.forEach(estrela => {
+        estrela.addEventListener('click', function() {
+            escolherNota(Number(this.getAttribute('data-nota')));
+        });
+        // preview ao passar o mouse 
+        estrela.addEventListener('mouseenter', function() {
+            pintarEstrelas(Number(this.getAttribute('data-nota')));
+        });
+    });
+
+    const containerEstrelas = document.getElementById('estrelasAvaliacao');
+    if (containerEstrelas) {
+        containerEstrelas.addEventListener('mouseleave', function() {
+            if (notaAvaliacao > 0) pintarEstrelas(notaAvaliacao);
+            else document.querySelectorAll('.estrela').forEach(e => e.classList.remove('ativa'));
+        });
+    }
+
+    if (enviarBtn) enviarBtn.addEventListener('click', enviarAvaliacao);
 });
 
 // 8. Persistência de Dados e Sincronização

@@ -144,5 +144,28 @@
         </div>
     </div>
 
+    <!-- Janelinha de avaliação depois da compra -->
+    <div id="avaliacaoModal" class="modal-hidden">
+        <div class="modal-overlay" id="avaliacaoOverlay"></div>
+        <div class="modal-card avaliacao-modal">
+            <button class="modal-close" id="avaliacaoClose">×</button>
+            <h3>Compra finalizada</h3>
+            <p class="avaliacao-msg">Deixe uma avaliação abaixo:</p>
+            <div class="estrelas" id="estrelasAvaliacao">
+                <button type="button" class="estrela" data-nota="1" aria-label="1 estrela">★</button>
+                <button type="button" class="estrela" data-nota="2" aria-label="2 estrelas">★</button>
+                <button type="button" class="estrela" data-nota="3" aria-label="3 estrelas">★</button>
+                <button type="button" class="estrela" data-nota="4" aria-label="4 estrelas">★</button>
+                <button type="button" class="estrela" data-nota="5" aria-label="5 estrelas">★</button>
+            </div>
+            <p id="notaEscolhida" class="nota-escolhida"></p>
+            <div id="areaComentario" class="area-comentario modal-hidden">
+                <label for="comentarioAvaliacao">Seu comentário:</label>
+                <textarea id="comentarioAvaliacao" rows="3" placeholder="Conta como foi sua experiência..."></textarea>
+                <button type="button" class="btn-confirm" id="enviarAvaliacao">Enviar avaliação</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
