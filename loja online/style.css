@@ -217,16 +217,76 @@ main {
     color: var(--muted);
     font-size: 0.78rem;
 }
-.item-tamanho {
+.item-tamanho,
+.item-cor {
     display: inline-block;
-    background: #c41e3a;
-    color: #fff;
     font-size: 0.72rem;
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 99px;
     margin-left: 6px;
     vertical-align: middle;
+}
+.item-tamanho {
+    background: #c41e3a;
+    color: #fff;
+}
+.item-cor-branco {
+    background: #f3f4f6;
+    color: #111;
+    border: 1px solid #d1d5db;
+}
+.item-cor-azul {
+    background: #2563eb;
+    color: #fff;
+}
+.item-cor-preto {
+    background: #111;
+    color: #fff;
+}
+
+/* Janelinha de escolher cor do kimono */
+.cor-modal {
+    width: 340px !important;
+}
+.cor-aviso {
+    color: #2563eb;
+    font-size: 0.82rem;
+    margin: 0 0 14px;
+}
+.cor-opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.btn-cor {
+    padding: 14px;
+    border-radius: 10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: 2px solid transparent;
+}
+.btn-cor:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+.btn-cor-branco {
+    background: #f9fafb;
+    color: #111;
+    border-color: #d1d5db;
+}
+.btn-cor-azul {
+    background: #2563eb;
+    color: #fff;
+    border-color: #1d4ed8;
+}
+.btn-cor-preto {
+    background: #111;
+    color: #fff;
+    border-color: #374151;
 }
 
 /* animação de entrada para os kimonos da lojinha*/

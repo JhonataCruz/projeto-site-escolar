@@ -66,15 +66,19 @@ document.addEventListener('DOMContentLoaded', function(){
     const tamanhoClose = document.getElementById('tamanhoClose');
     const tamanhoOverlay = document.getElementById('tamanhoOverlay');
     const botoesTamanho = document.querySelectorAll('.btn-tamanho');
+    const corClose = document.getElementById('corClose');
+    const corOverlay = document.getElementById('corOverlay');
 
-    if (tamanhoClose) tamanhoClose.addEventListener('click', fecharEscolhaTamanho);
-    if (tamanhoOverlay) tamanhoOverlay.addEventListener('click', fecharEscolhaTamanho);
+    if (tamanhoClose) tamanhoClose.addEventListener('click', () => fecharEscolhaTamanho(true));
+    if (tamanhoOverlay) tamanhoOverlay.addEventListener('click', () => fecharEscolhaTamanho(true));
+    if (corClose) corClose.addEventListener('click', fecharEscolhaCor);
+    if (corOverlay) corOverlay.addEventListener('click', fecharEscolhaCor);
 
-    // Cada botão A1, A2, A3, A4 chama adicionarComTamanho com o valor certo
+    // Cada botão A1, A2, A3, A4 abre a janelinha de cor em seguida
     botoesTamanho.forEach(btn => {
         btn.addEventListener('click', function() {
             const tamanho = this.getAttribute('data-tamanho');
-            adicionarComTamanho(tamanho);
+            selecionarTamanho(tamanho);
         });
     });
 });
@@ -95,9 +99,22 @@ function fecharDescricao(){
     if (modal) modal.classList.add('modal-hidden');
 }
 
-// 4. Escolher tamanho antes de adicionar no carrinho
-// Guardamos qual produto o cliente clicou (só um por vez)
+// 4. Escolher tamanho e cor antes de adicionar no carrinho
 let produtoPendente = null;
+let tamanhoPendente = null;
+
+function isKimonoITG(produto) {
+    return produto && produto.nome.includes('ITG');
+}
+
+function coresDisponiveis(produto) {
+    return isKimonoITG(produto) ? ['Branco', 'Azul', 'Preto'] : ['Branco', 'Azul'];
+}
+
+function calcularPrecoComCor(precoBase, cor) {
+    if (cor === 'Azul') return Math.round(precoBase * 1.05 * 100) / 100;
+    return precoBase;
+}
 
 // Abre a janelinha no meio da tela perguntando o tamanho
 function abrirEscolhaTamanho(id) {
@@ -105,6 +122,7 @@ function abrirEscolhaTamanho(id) {
     if (!produto) return;
 
     produtoPendente = produto;
+    tamanhoPendente = null;
 
     const modal = document.getElementById('tamanhoModal');
     const titulo = document.getElementById('tamanhoTitulo');
@@ -112,22 +130,68 @@ function abrirEscolhaTamanho(id) {
     if (modal) modal.classList.remove('modal-hidden');
 }
 
-// Fecha a janelinha e limpa o produto que estava esperando
-function fecharEscolhaTamanho() {
+function fecharEscolhaTamanho(limparProduto = true) {
     const modal = document.getElementById('tamanhoModal');
     if (modal) modal.classList.add('modal-hidden');
-    produtoPendente = null;
+    if (limparProduto) {
+        produtoPendente = null;
+        tamanhoPendente = null;
+    }
 }
 
-// Quando o cliente clica em A1, A2, A3 ou A4
-function adicionarComTamanho(tamanho) {
+function selecionarTamanho(tamanho) {
     if (!produtoPendente) return;
 
-    // Copia o produto e grava o tamanho escolhido junto
-    const item = { ...produtoPendente, tamanho: tamanho };
-    carrinho.push(item);
+    tamanhoPendente = tamanho;
+    fecharEscolhaTamanho(false);
+    abrirEscolhaCor();
+}
 
-    fecharEscolhaTamanho();
+function abrirEscolhaCor() {
+    if (!produtoPendente || !tamanhoPendente) return;
+
+    const modal = document.getElementById('corModal');
+    const titulo = document.getElementById('corTitulo');
+    const opcoes = document.getElementById('corOpcoes');
+    const cores = coresDisponiveis(produtoPendente);
+
+    if (titulo) titulo.textContent = `Cor do ${produtoPendente.nome} · ${tamanhoPendente}`;
+    if (opcoes) {
+        opcoes.innerHTML = cores.map(cor => {
+            const extra = cor === 'Azul' ? ' (+5%)' : '';
+            return `<button class="btn-cor btn-cor-${cor.toLowerCase()}" data-cor="${cor}">${cor}${extra}</button>`;
+        }).join('');
+
+        opcoes.querySelectorAll('.btn-cor').forEach(btn => {
+            btn.addEventListener('click', function() {
+                adicionarAoCarrinho(tamanhoPendente, this.getAttribute('data-cor'));
+            });
+        });
+    }
+
+    if (modal) modal.classList.remove('modal-hidden');
+}
+
+function fecharEscolhaCor() {
+    const modal = document.getElementById('corModal');
+    if (modal) modal.classList.add('modal-hidden');
+    produtoPendente = null;
+    tamanhoPendente = null;
+}
+
+function adicionarAoCarrinho(tamanho, cor) {
+    if (!produtoPendente) return;
+
+    const precoFinal = calcularPrecoComCor(produtoPendente.preco, cor);
+    const item = {
+        ...produtoPendente,
+        tamanho,
+        cor,
+        preco: precoFinal
+    };
+
+    carrinho.push(item);
+    fecharEscolhaCor();
     salvarEAtualizar();
 }
 
@@ -144,12 +208,12 @@ function atualizarCarrinho() {
 
     // Percorre o carrinho atual e reconstrói a lista do HTML com os novos itens
     carrinho.forEach((item, index) => {
-        // Mostra o tamanho ao lado do nome (ex: "Kimono Adidas · A2")
         const tamanhoTexto = item.tamanho ? `<span class="item-tamanho">${item.tamanho}</span>` : '';
+        const corTexto = item.cor ? `<span class="item-cor item-cor-${item.cor.toLowerCase()}">${item.cor}</span>` : '';
         lista.innerHTML += `
             <li>
                 <span class="item-info">
-                    ${item.nome} ${tamanhoTexto}
+                    ${item.nome} ${tamanhoTexto} ${corTexto}
                     <small>R$ ${item.preco.toFixed(2)}</small>
                 </span>
                 <button onclick="removerItem(${index})">X</button>
