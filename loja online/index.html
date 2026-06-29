@@ -171,9 +171,27 @@
                 <button type="button" class="estrela" data-nota="5" aria-label="5 estrelas">★</button>
             </div>
             <p id="notaEscolhida" class="nota-escolhida"></p>
-            <div id="areaComentario" class="area-comentario modal-hidden">
-                <label for="comentarioAvaliacao">Seu comentário:</label>
-                <textarea id="comentarioAvaliacao" rows="3" placeholder="Conta como foi sua experiência..."></textarea>
+            <div id="avaliacaoPrompt" class="avaliacao-prompt">
+                <p>Selecione uma nota e escreva sua experiência.</p>
+            </div>
+            <div id="areaComentario" class="area-comentario area-comentario--hidden">
+                <div class="campo-avaliacao">
+                    <label for="comentarioAvaliacao">Seu comentário</label>
+                    <textarea id="comentarioAvaliacao" rows="4" placeholder="Conta como foi sua experiência..."></textarea>
+                </div>
+
+                <div class="campo-avaliacao">
+                    <label class="upload-label" for="fotosAvaliacao">
+                        <span>📷 Adicionar fotos</span>
+                        <small>Até 4 imagens • JPG, PNG</small>
+                    </label>
+                    <input type="file" id="fotosAvaliacao" accept="image/*" multiple hidden>
+                    <div class="upload-box" id="uploadBox">
+                        <span>Toque aqui ou arraste imagens</span>
+                    </div>
+                    <div id="previewFotos" class="preview-grid"></div>
+                </div>
+
                 <button type="button" class="btn-confirm" id="enviarAvaliacao">Enviar avaliação</button>
             </div>
         </div>

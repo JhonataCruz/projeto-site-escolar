@@ -379,25 +379,67 @@ function confirmarPagamento(tipo) {
 
 // --- Sistema de avaliação (aparece quando a compra termina) ---
 let notaAvaliacao = 0;
+let fotosAvaliacao = [];
 
-function abrirAvaliacao() {
+function resetarAvaliacao() {
     notaAvaliacao = 0;
-    const modal = document.getElementById('avaliacaoModal');
+    fotosAvaliacao = [];
+
     const areaComentario = document.getElementById('areaComentario');
+    const avaliacaoPrompt = document.getElementById('avaliacaoPrompt');
     const notaTexto = document.getElementById('notaEscolhida');
     const comentario = document.getElementById('comentarioAvaliacao');
+    const inputFotos = document.getElementById('fotosAvaliacao');
+    const uploadBox = document.getElementById('uploadBox');
+    const preview = document.getElementById('previewFotos');
 
     if (notaTexto) notaTexto.textContent = '';
     if (comentario) comentario.value = '';
-    if (areaComentario) areaComentario.classList.add('modal-hidden');
+    if (inputFotos) inputFotos.value = '';
+    if (uploadBox) uploadBox.innerHTML = '<span>Toque aqui ou arraste imagens</span>';
+    if (preview) preview.innerHTML = '';
+    if (areaComentario) {
+        areaComentario.classList.remove('area-comentario--visible');
+        areaComentario.classList.add('area-comentario--hidden');
+        areaComentario.style.display = 'none';
+    }
+    if (avaliacaoPrompt) {
+        avaliacaoPrompt.classList.remove('modal-hidden');
+        avaliacaoPrompt.style.display = 'block';
+    }
     document.querySelectorAll('.estrela').forEach(e => e.classList.remove('ativa'));
+}
 
+function abrirAvaliacao() {
+    resetarAvaliacao();
+    const modal = document.getElementById('avaliacaoModal');
     if (modal) modal.classList.remove('modal-hidden');
+}
+
+function escolherNota(nota) {
+    notaAvaliacao = nota;
+    pintarEstrelas(nota);
+
+    const notaTexto = document.getElementById('notaEscolhida');
+    const areaComentario = document.getElementById('areaComentario');
+    const avaliacaoPrompt = document.getElementById('avaliacaoPrompt');
+
+    if (notaTexto) notaTexto.textContent = `Você deu ${nota} estrela${nota > 1 ? 's' : ''}!`;
+    if (areaComentario) {
+        areaComentario.classList.remove('area-comentario--hidden');
+        areaComentario.classList.add('area-comentario--visible');
+        areaComentario.style.display = 'flex';
+    }
+    if (avaliacaoPrompt) {
+        avaliacaoPrompt.classList.add('modal-hidden');
+        avaliacaoPrompt.style.display = 'none';
+    }
 }
 
 function fecharAvaliacao() {
     const modal = document.getElementById('avaliacaoModal');
     if (modal) modal.classList.add('modal-hidden');
+    resetarAvaliacao();
 }
 
 function pintarEstrelas(nota) {
@@ -408,21 +450,90 @@ function pintarEstrelas(nota) {
     });
 }
 
-function escolherNota(nota) {
-    notaAvaliacao = nota;
-    pintarEstrelas(nota);
+function renderizarPreviewFotos() {
+    const preview = document.getElementById('previewFotos');
+    const uploadBox = document.getElementById('uploadBox');
 
-    const notaTexto = document.getElementById('notaEscolhida');
-    const areaComentario = document.getElementById('areaComentario');
+    if (!preview) return;
 
-    if (notaTexto) notaTexto.textContent = `Você deu ${nota} estrela${nota > 1 ? 's' : ''}!`;
-    if (areaComentario) areaComentario.classList.remove('modal-hidden');
+    if (fotosAvaliacao.length === 0) {
+        preview.innerHTML = '';
+        if (uploadBox) uploadBox.innerHTML = '<span>Toque aqui ou arraste imagens</span>';
+        return;
+    }
+
+    preview.innerHTML = fotosAvaliacao.map((foto, index) => `
+        <div class="preview-item">
+            <img src="${foto.url}" alt="Foto ${index + 1}">
+            <button type="button" class="preview-remove" data-index="${index}" aria-label="Remover imagem">×</button>
+        </div>
+    `).join('');
+
+    if (uploadBox) {
+        uploadBox.innerHTML = `<span>${fotosAvaliacao.length} foto${fotosAvaliacao.length > 1 ? 's' : ''} pronta${fotosAvaliacao.length > 1 ? 's' : ''}</span>`;
+    }
+
+    preview.querySelectorAll('.preview-remove').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const index = Number(this.getAttribute('data-index'));
+            fotosAvaliacao.splice(index, 1);
+            renderizarPreviewFotos();
+        });
+    });
+}
+
+function tratarArquivosSelecionados(files) {
+    const arquivosValidos = Array.from(files || [])
+        .filter(file => file.type.startsWith('image/'))
+        .slice(0, 4 - fotosAvaliacao.length);
+
+    if (arquivosValidos.length === 0) return;
+
+    const novasFotos = arquivosValidos.map(file => ({
+        file,
+        url: URL.createObjectURL(file)
+    }));
+
+    fotosAvaliacao = [...fotosAvaliacao, ...novasFotos].slice(0, 4);
+    renderizarPreviewFotos();
+}
+
+function configurarUploadAvaliacao() {
+    const input = document.getElementById('fotosAvaliacao');
+    const uploadBox = document.getElementById('uploadBox');
+
+    if (!input || !uploadBox) return;
+
+    uploadBox.addEventListener('click', () => input.click());
+    uploadBox.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        uploadBox.classList.add('dragover');
+    });
+    uploadBox.addEventListener('dragleave', () => {
+        uploadBox.classList.remove('dragover');
+    });
+    uploadBox.addEventListener('drop', (event) => {
+        event.preventDefault();
+        uploadBox.classList.remove('dragover');
+        tratarArquivosSelecionados(event.dataTransfer.files);
+    });
+    input.addEventListener('change', () => {
+        tratarArquivosSelecionados(input.files);
+    });
 }
 
 function enviarAvaliacao() {
+    if (notaAvaliacao < 1) {
+        alert('Escolha ao menos uma estrela antes de enviar sua avaliação.');
+        return;
+    }
+
     const comentario = document.getElementById('comentarioAvaliacao').value.trim();
     let msg = `Obrigado pela avaliação de ${notaAvaliacao} estrela${notaAvaliacao > 1 ? 's' : ''}!`;
     if (comentario) msg += '\nSeu comentário foi registrado.';
+    if (fotosAvaliacao.length > 0) {
+        msg += `\n${fotosAvaliacao.length} foto${fotosAvaliacao.length > 1 ? 's' : ''} anexada${fotosAvaliacao.length > 1 ? 's' : ''}.`;
+    }
     alert(msg);
     fecharAvaliacao();
 }
@@ -476,6 +587,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const avaliacaoOverlay = document.getElementById('avaliacaoOverlay');
     const estrelas = document.querySelectorAll('.estrela');
     const enviarBtn = document.getElementById('enviarAvaliacao');
+
+    configurarUploadAvaliacao();
 
     if (avaliacaoClose) avaliacaoClose.addEventListener('click', fecharAvaliacao);
     if (avaliacaoOverlay) avaliacaoOverlay.addEventListener('click', fecharAvaliacao);
