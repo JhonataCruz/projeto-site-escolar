@@ -206,7 +206,7 @@ body.light-theme .card-contato { background-color: var(--card-bg-light); color: 
 /* botao ficar um pouc transparente */
 #themeToggle { background: transparent; border: 2px solid var(--accent); color: inherit; padding: 10px 14px; border-radius: 8px; cursor:pointer; font-size:16px; }
 
-/* botaozinho de escolher o email */
+/* botao de escolher o email */
 .botao-email {
     background: transparent;
     border: 2px solid var(--accent);
