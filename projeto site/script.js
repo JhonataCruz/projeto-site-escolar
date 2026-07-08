@@ -48,7 +48,7 @@ function abrirProvador(){
     if (modal) modal.classList.remove('modal-hidden');
 }
 
-// Fecha a janelinha e limpa os campinhos
+// Fecha a janelinha e limpa os campos
 function fecharProvador(){
     const modal = document.getElementById('provadorModal');
     const resultado = document.getElementById('resultadoProvador');
@@ -104,6 +104,28 @@ document.addEventListener('DOMContentLoaded', function(){
             const curr = body.classList.contains('light-theme') ? 'light' : 'dark';
             localStorage.setItem('theme', curr);
             updateThemeIcon();
+        });
+    }
+
+    // --- botao de escolher o email (estudante ou pessoal) ---
+    const emailBtn = document.getElementById('emailBtn');
+    const emailOpcoes = document.getElementById('emailOpcoes');
+    const emailTexto = document.getElementById('emailTexto');
+
+    if (emailBtn && emailOpcoes){
+        emailBtn.addEventListener('click', function(e){
+            e.preventDefault();
+            emailOpcoes.classList.toggle('opcoes-hidden');
+        });
+
+        // pega todos os botaos de opçao (estudante / pessoal)
+        const opcoes = document.querySelectorAll('.opcao-email-item');
+        opcoes.forEach(function(opcao){
+            opcao.addEventListener('click', function(){
+                const emailEscolhido = opcao.getAttribute('data-email');
+                emailTexto.textContent = emailEscolhido;
+                emailOpcoes.classList.add('opcoes-hidden');
+            });
         });
     }
 

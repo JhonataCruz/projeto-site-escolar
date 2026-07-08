@@ -206,6 +206,50 @@ body.light-theme .card-contato { background-color: var(--card-bg-light); color: 
 /* botao ficar um pouc transparente */
 #themeToggle { background: transparent; border: 2px solid var(--accent); color: inherit; padding: 10px 14px; border-radius: 8px; cursor:pointer; font-size:16px; }
 
+/* botaozinho de escolher o email */
+.botao-email {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: inherit;
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 8px;
+}
+
+.botao-email:hover {
+    background: var(--accent);
+}
+
+/* mini menu com as opçoes de email */
+.opcoes-email {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 220px;
+    margin: 0 auto 15px auto;
+}
+
+.opcoes-hidden { display: none; }
+
+.opcao-email-item {
+    background-color: var(--card-bg-dark);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 300ms ease;
+}
+
+.opcao-email-item:hover {
+    background: var(--accent);
+}
+
+body.light-theme .opcao-email-item { background-color: var(--card-bg-light); color: var(--text-light); }
+
 /* Rodapé com redes sociais */
 .rodape-estudante {
     margin-top: 60px;
