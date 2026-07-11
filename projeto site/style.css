@@ -1,6 +1,6 @@
 :root{
-    --bg-dark: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-    --bg-light: linear-gradient(135deg, #f4f4f6, #e6e6e8);
+    --bg-dark: #0f0f0f;
+    --bg-light: #f4f4f6;
     --text-dark: #ffffff;
     --text: var(--text-dark);
     --text-light: #111111;
@@ -12,7 +12,7 @@
 }
 
 body {
-    background: var(--bg-dark);
+    background-color: var(--bg-dark);
     color: var(--text);
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -23,7 +23,7 @@ body {
 
 /* tema claro do menu de inicio */
 body.light-theme {
-    background: var(--bg-light);
+    background-color: var(--bg-light);
     color: var(--text-light);
     color: var(--text-light);
     --text: var(--text-light);
