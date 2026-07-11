@@ -5,10 +5,10 @@ let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 // 2. Banco de Dados Simulado
 // Array de objetos representando os produtos disponíveis na loja (com descrições)
 const produtos = [
-    { id: 1, nome: "Kimono Adidas",        preco: 999,  imagem: "imagens/adidas.jpg", descricao: "Kimono leve, ideal para treinos e competições; tecido respirável e corte clássico." },
-    { id: 2, nome: "Kimono ITG",           preco: 380,  imagem: "imagens/itg.jpg", descricao: "Modelo resistente com reforços nas costuras; ótimo custo-benefício para iniciantes." },
-    { id: 3, nome: "Kimono Nagashima",     preco: 690,  imagem: "imagens/nagashima.jpg", descricao: "Acabamento premium, tecido encorpado e durável; recomendado para praticantes regulares." },
-    { id: 4, nome: "Kimono Sakura (Approved)", preco: 1600, imagem: "imagens/sakura.jpg", descricao: "Edição especial com bordados e forro reforçado; visual elegante para apresentações." }
+    { id: 1, nome: "Kimono Adidas",        preco: 999,  imagem: "imagens/adidas.jpg", descricao: "Kimono leve, ideal para treinos e competições; tecido respirável e corte clássico. <a href='https://www.acscombat.com.br/kimono-jud-adidas-club-tran-ado' target='_blank'>saiba mais</a>" },
+    { id: 2, nome: "Kimono ITG",           preco: 380,  imagem: "imagens/itg.jpg", descricao: "Modelo resistente com reforços nas costuras; ótimo custo-benefício para iniciantes. <a href='https://www.intheguard.com.br/' target='_blank'>saiba mais</a>" }, //obs nao encontrei o link do kimono entao vai o do site msm
+    { id: 3, nome: "Kimono Nagashima",     preco: 690,  imagem: "imagens/nagashima.jpg", descricao: "Acabamento premium, tecido encorpado e durável; recomendado para praticantes regulares. <a href='https://en.wikipedia.org/wiki/Nagashima' target='_blank'>saiba mais</a>" }, //nagashima nn tem site entao vai um wikipedia msm kkkkkk
+    { id: 4, nome: "Kimono Sakura (Approved)", preco: 1600, imagem: "imagens/sakura.jpg", descricao: "Edição especial com bordados e forro reforçado; visual elegante para apresentações. <a href='https://judogi.com.br/judogi/judogi-kasakura/' target='_blank'>saiba mas</a>" }     //aprendi o _blank com gustavo guanabara o goat
 ];
 const areaProdutos = document.getElementById("produtos");
 // 3. Renderização da Vitrine de Produtos
@@ -90,7 +90,8 @@ function abrirDescricao(id){
     const titulo = document.getElementById('descTitulo');
     const texto = document.getElementById('descTexto');
     titulo.textContent = produto.nome;
-    texto.textContent = produto.descricao;
+    //se bem que so funcionou o link dos sites pq eu perguntei pro claude pq nao funcionava e ele disse que era pq eu tava usando textcontent e nao inner.html ;-; pelo menos foi
+    texto.innerHTML = produto.descricao;
     if (modal) modal.classList.remove('modal-hidden');
 }
 
@@ -106,7 +107,7 @@ let tamanhoPendente = null;
 function isKimonoITG(produto) {
     return produto && produto.nome.includes('ITG');
 }
-
+// a mas so o itg que tem preto pq, pq deus quiss shhhhhhhh
 function coresDisponiveis(produto) {
     return isKimonoITG(produto) ? ['Branco', 'Azul', 'Preto'] : ['Branco', 'Azul'];
 }
