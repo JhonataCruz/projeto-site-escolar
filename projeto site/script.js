@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const resultado = document.getElementById('resultadoProvador');
         const tamanho = sugestaoKimono(altura, peso);
         if (!tamanho){
-            resultado.textContent = 'mlk burro coloca esse negocio direito ai';
+            resultado.textContent = 'coloca direiro ai poww';
             return;
         }
         resultado.textContent = `Teu Tamanho:  ${tamanho}`;
